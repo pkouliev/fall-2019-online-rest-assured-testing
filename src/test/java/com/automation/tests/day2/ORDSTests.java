@@ -66,4 +66,24 @@ public class ORDSTests {
          * 200 is always expected status code after GET request
          */
     }
+
+    /**
+     * given base URI = http://54.224.118.38:1000/ords/hr/
+     * when user sends get request to "/countries"
+     * then user verifies that status code is 200
+     */
+
+    @Test
+    @DisplayName("Get list of all countries")
+    public void getALLCountries() {
+        given().
+                baseUri(Base_URL).
+                when().
+                get("/countries").prettyPeek().
+                then().statusCode(200);
+
+        //.statusLine("OK");
+        // statusLine - to verify status line
+    }
+
 }
