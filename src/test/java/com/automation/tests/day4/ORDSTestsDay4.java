@@ -6,6 +6,7 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -64,8 +65,43 @@ public class ORDSTestsDay4 {
 
         // SECOND REQUEST to list of countries
         Response response = given().
-                accept(ContentType.JSON).
+                accept(ContentType.JSON). // to request JSON from the web service
                 when().
                 get("/countries").prettyPeek();
+
+        String countryName = response.jsonPath().getString("items.find{it.country_id == 'US'}.country_name");
+        Map<String, Object> countryUS = response.jsonPath().get("items.find{it.country_id == 'US'}");
+
+        // find all country names from region 2
+        // collectionName.findAll{it.property.name == 'Value} -- to get collection of objects where property equals to some value
+        // collectionName.findAll{it.property.name == 'Value} -- to get object where property equals to some value
+        // collectionName.findAll{it.property.name == 'Value}.propertyName -- to get collection of properties where property equals to some value
+        List<String> countryNames = response.jsonPath().getList("items.findAll{it.region_id == 2}.country_name");
+
+        System.out.println("Country name: " + countryName);
+        System.out.println(countryUS);
+        System.out.println(countryNames);
+
+        for (Map.Entry<String, Object> entry : countryUS.entrySet()) {
+            System.out.printf("key = %s, value = %s\n", entry.getKey(), entry.getValue());
+        }
+    }
+
+    // let's find employee with highest salary. Use GPath
+
+    @Test
+    public void getEmployeeTest() {
+        Response response = when().get("/employees").prettyPeek();
+
+        // collectionName.max{it.propertyName}
+        Map<String, ?> bestEmployee = response.jsonPath().get("items.max{it.salary}");
+        Map<String, ?> poorGuy = response.jsonPath().get("items.min{it.salary}");
+
+        int companiesPayroll = response.jsonPath().get("items.collect{it.salary}.sum()");
+
+        System.out.println(bestEmployee);
+        System.out.println(poorGuy);
+        System.out.println("Company's payroll: " + companiesPayroll);
+
     }
 }
