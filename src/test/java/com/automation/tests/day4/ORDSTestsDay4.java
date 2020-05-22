@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ORDSTestsDay4 {
 
@@ -88,7 +89,6 @@ public class ORDSTestsDay4 {
     }
 
     // let's find employee with highest salary. Use GPath
-
     @Test
     public void getEmployeeTest() {
         Response response = when().get("/employees").prettyPeek();
@@ -102,6 +102,44 @@ public class ORDSTestsDay4 {
         System.out.println(bestEmployee);
         System.out.println(poorGuy);
         System.out.println("Company's payroll: " + companiesPayroll);
+
+    }
+
+    /**
+     * given path parameter is "/employees"
+     * when user makes get request
+     * then assert that status code is 200
+     * Then user verifies that every employee has positive salary
+     */
+    @Test
+    @DisplayName("Verify that every employee has positive salary")
+    public void testSalary() {
+        when().
+                get("/employees").
+                then().
+                assertThat().
+                statusCode(200).
+                body("items.salary", everyItem(greaterThan(0))). // great example of syntax sugar
+                // advanced assertions
+                        log().ifError(); // process of recording response, error means recorded if error happens
+    }
+
+    /**
+     * given path parameter is "/employees{id}"
+     * and path parameter is 101
+     * when user makes get request
+     * then assert that status code is 200
+     * and verifies that phone number is 515-123-4568
+     */
+    @Test
+    public void verifyPhoneNumber() {
+        Response response = when().get("/employees/{id}", 101).prettyPeek();
+
+        String expected = "515-123-4568";
+        String actual = response.jsonPath().getString("phone_number").replace(".", "-");
+
+        assertEquals(200, response.statusCode());
+        assertEquals(expected, actual);
 
     }
 }
