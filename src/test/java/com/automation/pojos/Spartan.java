@@ -19,28 +19,26 @@ import java.util.Objects;
  */
 
 public class Spartan {
-    private int id; // id will not be included in request, because we can't set id anyways, auto-generated
+    private int id;
     private String name;
     private String gender;
     @SerializedName("phone")
     private long phoneNumber;
-    // instance variables are properties to describe object
 
-    // create constructor for creating object, constructors can overload, to set values to instance variables
-    public Spartan(String name, String gender, long phoneNumber) { // id will be automatically assigned by server
+    public Spartan(String name, String gender, long phoneNumber) {
         this.name = name;
         this.gender = gender;
-        this.phoneNumber = phoneNumber;
+        setPhoneNumber(phoneNumber);
     }
 
     public Spartan(int id, String name, String gender, long phoneNumber) {
         this.id = id;
         this.name = name;
         this.gender = gender;
-        this.phoneNumber = phoneNumber;
+        setPhoneNumber(phoneNumber);
     }
 
-    public Spartan() { // no arguments constructor
+    public Spartan() {
 
     }
 
@@ -48,12 +46,35 @@ public class Spartan {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public long getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(long phoneNumber) {
+        if (String.valueOf(phoneNumber).length() < 10) {
+            throw new RuntimeException("Phone number is too short!");
+        }
+        this.phoneNumber = phoneNumber;
     }
 
     @Override
-    public String toString() { // will be overridden
+    public String toString() {
         return "Spartan{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
@@ -65,16 +86,13 @@ public class Spartan {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Spartan)) return false;
         Spartan spartan = (Spartan) o;
-        return id == spartan.id;  // && // if id is same, we look into same objects
-//                phoneNumber == spartan.phoneNumber &&
-//                Objects.equals(name, spartan.name) &&
-//                Objects.equals(gender, spartan.gender);
+        return id == spartan.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, gender, phoneNumber);
+        return Objects.hash(id);
     }
 }
