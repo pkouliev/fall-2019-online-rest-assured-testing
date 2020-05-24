@@ -28,6 +28,7 @@ public class POJOPracticeWithSpartanAPP {
     @BeforeAll
     public static void beforeALL() {
         baseURI = ConfigurationReader.getProperty("SPARTAN.URI");
+        authentication = basic("admin", "admin");
     }
 
     @Test
@@ -70,6 +71,53 @@ public class POJOPracticeWithSpartanAPP {
 
         // spartanResponse is a Spartan
         System.out.println(spartanResponse instanceof Spartan); //must be true
+    }
+
+    @Test
+    @DisplayName("Retrieve existing user, update name and verify that name was updated successfully.")
+    public void updateSpartanTest() {
+
+        String name = "Captain Kirk";
+        Spartan spartan = new Spartan(name, "Male", 5677890234L);
+
+        int userToUpdate = 369;
+
+        // get spartan from web service
+        Spartan spartanToUpdate = given().
+                auth().basic("admin", "admin").
+                accept(ContentType.JSON).
+                when().
+                get("/spartans/{id}", userToUpdate).as(Spartan.class);
+
+        System.out.println("Before update: " + spartanToUpdate);
+        // change only name
+        spartanToUpdate.setName(name); // update property that you need without affecting other properties
+        System.out.println("After update: " + spartanToUpdate);
+
+
+        // HTTP PUT request to update existence record
+        //PUT - requires to provide ALL parameters in body
+        // PUT requires same body as POST
+        // if you miss at least one parameter, it will not work
+
+        Response response = given().
+                auth().basic("admin", "admin").
+                contentType(ContentType.JSON).
+                body(spartan).
+                when().
+                put("/spartans/{id}", userToUpdate).prettyPeek(); //request to update existing user with id 369
+
+        response.then().statusCode(204); // verify that status code is 204 after update
+
+        System.out.println("###########################################################");
+
+        // to get user with id 369, the one just updated
+        given().
+                auth().basic("admin", "admin").
+                when().
+                get("/spartans/{id}", userToUpdate).prettyPeek().
+                then().
+                statusCode(200).body("name", is(name)); // verify that name is correct after update
     }
 
 }
