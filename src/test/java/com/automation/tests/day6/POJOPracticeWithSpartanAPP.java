@@ -66,6 +66,7 @@ public class POJOPracticeWithSpartanAPP {
         Map<String, Object> spartanResponseMap = response.jsonPath().getObject("data", Map.class);
 
         System.out.println(spartanResponse);
+        System.out.println(spartanResponseMap);
 
         // spartanResponse is a Spartan
         System.out.println(spartanResponse instanceof Spartan); //must be true
