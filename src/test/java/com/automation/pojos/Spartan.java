@@ -67,7 +67,7 @@ public class Spartan {
     }
 
     public void setPhoneNumber(long phoneNumber) {
-        if (String.valueOf(phoneNumber).length() < 10) {
+        if (String.valueOf(phoneNumber).length() < 10) { // converting to String is easiest way to get length
             throw new RuntimeException("Phone number is too short!");
         }
         this.phoneNumber = phoneNumber;
