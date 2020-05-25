@@ -1,7 +1,7 @@
 {
   "admissionNo": "7897654",
-  "batch": 0,
-  "birthDate": "2020-05-25",
+  "batch": 15,
+  "birthDate": "2000/05/25",
   "company": {
     "address": {
       "addressId": 0,
@@ -15,14 +15,13 @@
     "title": "SDET"
   },
   "contact": {
-    "contactId": 0,
-    "emailAddress": "apiCyber@cybertek.com"
-    "phone": "4567891234",
+    "emailAddress": "apiCyber@cybertek.com",
+    "phone": "456-789-1234",
     "premanentAddress": "Broadway, NYC"
   },
   "firstName": "Captain",
   "gender": "male",
-  "joinDate": "2020-05-25",
+  "joinDate": "05/25/2015",
   "lastName": "Kirk",
   "major": "marineCyber",
   "password": "4567",
