@@ -21,8 +21,8 @@ import java.util.Map;
  * "department_id": 90,
  * "links": [
  * {
- * "rel": "self",
- * "href": "http://3.85.41.58:1000/ords/hr/employees/100"
+ *       "rel": "self",
+ *       "href": "http://3.85.41.58:1000/ords/hr/employees/100"
  * }
  * ]
  * },
