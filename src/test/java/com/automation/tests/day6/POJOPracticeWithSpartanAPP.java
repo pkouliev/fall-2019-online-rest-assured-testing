@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import static io.restassured.RestAssured.*;
@@ -118,6 +119,51 @@ public class POJOPracticeWithSpartanAPP {
                 get("/spartans/{id}", userToUpdate).prettyPeek().
                 then().
                 statusCode(200).body("name", is(name)); // verify that name is correct after update
+    }
+
+    @Test
+    @DisplayName("Verify that user can perform PATCH request")
+    public void patchUserTest() {
+        //PATCH - partial update of existing record
+
+        int userId = 369; //user to update, make sure user with this id exists
+
+        //let's put the code to take random user
+        // get all spartans
+        Response response0 = given().accept(ContentType.JSON).when().get("/spartans");
+
+        // save them all in the array list
+        List<Spartan> allSpartans = response0.jsonPath().getList("", Spartan.class);
+        // Spartan.class - data type of collection
+        // getList - get JSON body as a list
+
+        Random random = new Random();
+        int randomNum = random.nextInt(allSpartans.size()); // generate random number
+
+        int randomUserID = allSpartans.get(randomNum).getId();
+        System.out.println("NAME BEFORE: " + allSpartans.get(randomNum).getName());
+
+        userId = randomUserID; // to assign random user id
+        System.out.println(allSpartans);
+
+        Map<String, String> update = new HashMap<>();
+        update.put("name", "Captain Grant"); // this is a request to update user
+
+        Response response = given().
+                contentType(ContentType.JSON).
+                body(update).
+                when().
+                patch("/spartans/{id}", userId);
+
+        response.then().assertThat().statusCode(204);
+
+        // after we updated partially existing user, let's make sure that name is updated
+        // this is a request to verify that name was updated and status code is correct as well
+        given().
+                accept(ContentType.JSON).
+                when().get("/spartans/{id}", userId).prettyPeek().
+                then().assertThat().statusCode(200).body("name", is("Captain Grant"));
+
     }
 
 }
